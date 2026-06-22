@@ -92,3 +92,4 @@ If you are using the web interface to add/edit tools:
 | **Gemini TTS Script Creator & Generator** | Script | Batch Text-to-Speech generation scripts using Gemini 3.1 Flash. Supports emotion tags, voice customization, and WAV headers. |
 | **PostEx COD Tracker & FIFO Allocator** | Script | PostEx COD (Cash on Delivery) API tracking client & FIFO/FEFO stock allocation engine using Drizzle ORM transactions. |
 | **Zoho Recruit Screener & Scorer** | CLI | Automates candidate screening. Scores resumes with Gemini structured outputs, generates daily digests, and updates Zoho pipelines in bulk. |
+| **Dynamic QR Code Generator** | Web App | Dynamic shortlinks and QR routing service with custom UTM parameter forwarding, background scan analytics, and a Vercel dashboard. |

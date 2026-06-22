@@ -125,5 +125,28 @@
       }
     ],
     "icon": "👥"
+  },
+  {
+    "id": "dynamic-qr-generator",
+    "name": "Dynamic QR Code Generator",
+    "type": "webapp",
+    "desc": "Dynamic QR Code & shortlink manager. Runs redirect routes on Next.js Edge, preserves UTM parameters, increments scan metrics in background Neon calls, and includes an admin editor.",
+    "tags": [
+      "Next.js",
+      "Prisma",
+      "Neon",
+      "Vercel",
+      "Marketing"
+    ],
+    "url": "https://qr.lumalabs.store/admin",
+    "code": "# Live Admin Panel: https://qr.lumalabs.store/admin\n# Credentials:\n# Password: LumaLabsDQR",
+    "files": [
+      {
+        "name": "route.ts",
+        "language": "typescript",
+        "content": "import { NextRequest, NextResponse } from \"next/server\";\nimport { neon } from \"@neondatabase/serverless\";\n\nexport const runtime = \"edge\";\n\nconst sql = neon(process.env.DATABASE_URL || \"\");\n\nexport async function GET(\n    request: NextRequest,\n    { params }: { params: Promise<{ shortCode: string }> }\n) {\n    const { shortCode } = await params;\n\n    try {\n        // 1. Fetch the destination URL from Neon\n        // Note: We use raw SQL here for maximum performance on the edge\n        const links = await sql`\n      SELECT \"destinationUrl\" \n      FROM \"Link\" \n      WHERE \"shortCode\" = ${shortCode} \n      LIMIT 1\n    `;\n\n        const link = links[0];\n\n        // Fallback if not found\n        if (!link) {\n            return NextResponse.redirect(\"https://lumalabs.pk\");\n        }\n\n        // 2. Prepare the destination URL and preserve incoming UTMs\n        const targetUrl = new URL(link.destinationUrl);\n        const incomingParams = request.nextUrl.searchParams;\n\n        incomingParams.forEach((value, key) => {\n            targetUrl.searchParams.set(key, value);\n        });\n\n        // 3. Increment scan_count asynchronously (fire and forget)\n        // We use a background promise to avoid blocking the redirect response\n        (async () => {\n            await sql`\n        UPDATE \"Link\" \n        SET \"scanCount\" = \"scanCount\" + 1 \n        WHERE \"shortCode\" = ${shortCode}\n      `;\n        })().catch(err => console.error(\"Failed to increment scan count:\", err));\n\n        // 4. Return 302 Redirect (Found)\n        return NextResponse.redirect(targetUrl.toString(), 302);\n\n    } catch (err) {\n        console.error(\"Critical redirect error:\", err);\n        return NextResponse.redirect(\"https://lumalabs.pk\");\n    }\n}\n"
+      }
+    ],
+    "icon": "🔗"
   }
 ]
