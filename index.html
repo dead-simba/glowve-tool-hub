@@ -164,8 +164,10 @@
     .type-label span:first-child { font-size: 20px; }
     .type-opt:checked + .type-label { border-color: var(--accent); color: var(--accent-h); background: rgba(124,106,247,0.1); }
 
-    /* conditional fields */
-    .field-url, .field-code, .field-filepath { display: none; }
+    /* section divider in modal */
+    .form-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0 18px; }
+    .form-section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     .form-hint { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
 
@@ -263,24 +265,27 @@
         <input id="f-tags" type="text" placeholder="Python, Images, Compression…" />
       </div>
 
-      <!-- URL field (web apps, APIs) -->
-      <div class="form-row field-url" id="field-url">
-        <label>URL / Link</label>
+      <hr class="form-divider" />
+      <div class="form-section-label">Content</div>
+
+      <!-- URL / Link -->
+      <div class="form-row" id="field-url">
+        <label>URL / Link <span style="font-weight:400;text-transform:none;letter-spacing:0">(for web apps, APIs, docs)</span></label>
         <input id="f-url" type="url" placeholder="https://…" />
       </div>
 
-      <!-- File path (scripts, CLI) -->
-      <div class="form-row field-filepath" id="field-filepath">
-        <label>File path <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-        <input id="f-filepath" type="text" placeholder="/path/to/script.py" />
-        <p class="form-hint">The full path to the file on your machine.</p>
+      <!-- File path -->
+      <div class="form-row" id="field-filepath">
+        <label>File / Script path <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <input id="f-filepath" type="text" placeholder="/path/to/script.py or github.com/user/repo" />
+        <p class="form-hint">Local path on your machine, or a GitHub repo URL.</p>
       </div>
 
-      <!-- Code snippet (scripts, CLI) -->
-      <div class="form-row field-code" id="field-code">
-        <label>Commands / Code snippet <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-        <textarea id="f-code" placeholder="# How to run it&#10;python3 script.py --dir ./images"></textarea>
-        <p class="form-hint">Paste the key commands you want to remember. Will be shown with a copy button.</p>
+      <!-- Code / Commands -->
+      <div class="form-row" id="field-code">
+        <label>Commands / Code <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <textarea id="f-code" placeholder="# Paste the commands to run this tool&#10;python3 script.py --dir ./images&#10;&#10;# Or paste the full script here"></textarea>
+        <p class="form-hint">These show on the card with a one-click Copy button.</p>
       </div>
 
     </form>
@@ -306,7 +311,7 @@ const defaultTools = [
     desc: 'Batch-converts JPG & PNG to WebP. ~95% file size reduction. Supports dry-run, lossless, delete-originals.',
     tags: ['Python', 'Images', 'Compression'],
     url: '',
-    filepath: '/Users/alitahir/Documents/Programming Projects/Claude Code/glowve Website/convert_to_webp.py',
+    filepath: '',
     code: `# Convert all images in a folder\npython3 convert_to_webp.py --dir "path/to/images"\n\n# Dry-run (preview only)\npython3 convert_to_webp.py --dry-run\n\n# Lossless (logos/icons)\npython3 convert_to_webp.py --lossless --skip-jpg`,
     icon: '🖼'
   }
@@ -464,14 +469,12 @@ function closeModal() {
   document.getElementById('tool-form').reset();
   editingId = null;
   document.getElementById('modal-title').textContent = 'Add a tool';
-  updateFieldVisibility();
 }
 
 document.getElementById('open-modal').addEventListener('click', () => {
   editingId = null;
   document.getElementById('tool-form').reset();
   document.getElementById('modal-title').textContent = 'Add a tool';
-  updateFieldVisibility();
   openModal();
 });
 document.getElementById('close-modal').addEventListener('click', closeModal);
@@ -480,21 +483,7 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 });
 
-// ─────────────────────────────────────────────
-//  FIELD VISIBILITY BY TYPE
-// ─────────────────────────────────────────────
-function updateFieldVisibility() {
-  const type = document.querySelector('input[name="type"]:checked')?.value || 'script';
-  const showUrl      = ['webapp','api'].includes(type);
-  const showCode     = ['script','cli','other'].includes(type);
-  const showFilepath = ['script','cli'].includes(type);
-  document.getElementById('field-url').style.display      = showUrl      ? '' : 'none';
-  document.getElementById('field-code').style.display     = showCode     ? '' : 'none';
-  document.getElementById('field-filepath').style.display = showFilepath ? '' : 'none';
-}
-
-document.querySelectorAll('input[name="type"]').forEach(r => r.addEventListener('change', updateFieldVisibility));
-updateFieldVisibility();
+// All content fields are always visible — no hide/show logic needed.
 
 // ─────────────────────────────────────────────
 //  SAVE
