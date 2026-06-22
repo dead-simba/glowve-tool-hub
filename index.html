@@ -22,192 +22,220 @@
       --green:    #34d399;
       --blue:     #60a5fa;
       --orange:   #fb923c;
+      --red:      #f87171;
+      --yellow:   #fbbf24;
       --r:        12px;
       --r-sm:     8px;
     }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(124,106,247,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(124,106,247,0.025) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; z-index: 0; }
 
-    /* subtle grid */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(124,106,247,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,106,247,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
-      pointer-events: none; z-index: 0;
-    }
-
-    .shell { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 0 24px 80px; }
+    .shell { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
 
     /* ── Header ── */
-    header { padding: 52px 0 36px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-    .header-left h1 { font-size: clamp(24px, 4vw, 36px); font-weight: 700; letter-spacing: -0.03em; background: linear-gradient(135deg, #fff 50%, rgba(255,255,255,0.4)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .header-left p { color: var(--muted); font-size: 14px; margin-top: 5px; }
+    header { padding: 48px 0 32px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .header-left h1 { font-size: clamp(22px, 4vw, 34px); font-weight: 700; letter-spacing: -0.03em; background: linear-gradient(135deg, #fff 50%, rgba(255,255,255,0.4)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .header-left p { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+
+    /* ── Saving indicator ── */
+    .save-status { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; opacity: 0; transition: opacity 0.3s; }
+    .save-status.visible { opacity: 1; }
+    .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+    .save-status.saving .save-dot { background: var(--yellow); animation: blink 0.8s ease-in-out infinite; }
+    .save-status.saved .save-dot { background: var(--green); }
+    .save-status.error .save-dot { background: var(--red); }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+    /* ── Settings button ── */
+    .btn-icon { width: 34px; height: 34px; border-radius: var(--r-sm); background: var(--surface); border: 1px solid var(--border); color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .btn-icon:hover { color: var(--text); border-color: var(--border-h); }
+    .btn-icon.active { color: var(--accent-h); border-color: var(--accent); }
+
+    /* ── Setup banner ── */
+    .setup-banner { background: rgba(124,106,247,0.08); border: 1px solid rgba(124,106,247,0.25); border-radius: var(--r); padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .setup-banner p { font-size: 13.5px; color: var(--text); flex: 1; }
+    .setup-banner p span { color: var(--muted); }
+    .btn-setup { background: var(--accent); border: none; color: #fff; font-family: inherit; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: var(--r-sm); cursor: pointer; white-space: nowrap; }
 
     /* ── Toolbar ── */
-    .toolbar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 28px; }
-    .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 300px; }
-    .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-    #search { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text); font-family: inherit; font-size: 13.5px; padding: 9px 12px 9px 36px; outline: none; transition: border-color 0.2s; }
+    .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; }
+    .search-wrap { position: relative; flex: 1; min-width: 160px; max-width: 280px; }
+    .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    #search { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text); font-family: inherit; font-size: 13.5px; padding: 8px 12px 8px 34px; outline: none; transition: border-color 0.2s; }
     #search:focus { border-color: var(--accent); }
     #search::placeholder { color: var(--muted); }
-
-    .filters { display: flex; gap: 6px; flex-wrap: wrap; }
-    .filter-btn { padding: 6px 13px; border-radius: 99px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .filters { display: flex; gap: 5px; flex-wrap: wrap; }
+    .filter-btn { padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
     .filter-btn:hover { border-color: var(--border-h); color: var(--text); }
     .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-    .btn-add { margin-left: auto; display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--r-sm); background: var(--accent); border: none; color: #fff; font-family: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+    .btn-add { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--r-sm); background: var(--accent); border: none; color: #fff; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
     .btn-add:hover { background: var(--accent-h); }
+    .btn-add:disabled { opacity: 0.5; cursor: not-allowed; }
 
     /* ── Cards ── */
-    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 14px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 14px; }
     @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
 
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px 22px; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; position: relative; overflow: hidden; }
-    .card:hover { border-color: var(--border-h); transform: translateY(-1px); box-shadow: 0 8px 32px rgba(0,0,0,0.35); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px 22px; transition: border-color 0.2s, transform 0.18s, box-shadow 0.18s; }
+    .card:hover { border-color: var(--border-h); transform: translateY(-1px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
 
-    .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
-    .card-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+    .card-header { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 8px; }
+    .card-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
     .card-meta { flex: 1; min-width: 0; }
     .card-title { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-    .card-badges { display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+    .card-badges { display: flex; align-items: center; gap: 5px; margin-top: 4px; flex-wrap: wrap; }
 
-    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
-    .badge-script  { background: rgba(124,106,247,0.15); color: #a78bfa; }
-    .badge-webapp  { background: rgba(96,165,250,0.15);  color: var(--blue); }
-    .badge-cli     { background: rgba(52,211,153,0.15);  color: var(--green); }
-    .badge-api     { background: rgba(251,146,60,0.15);  color: var(--orange); }
-    .badge-other   { background: rgba(255,255,255,0.07); color: var(--muted); }
+    .badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+    .badge-script { background: rgba(124,106,247,0.15); color: #a78bfa; }
+    .badge-webapp { background: rgba(96,165,250,0.15); color: var(--blue); }
+    .badge-cli    { background: rgba(52,211,153,0.15); color: var(--green); }
+    .badge-api    { background: rgba(251,146,60,0.15); color: var(--orange); }
+    .badge-other  { background: rgba(255,255,255,0.07); color: var(--muted); }
+    .badge-files  { background: rgba(96,165,250,0.1); color: var(--blue); cursor: pointer; border: 1px solid rgba(96,165,250,0.2); }
+    .badge-files:hover { background: rgba(96,165,250,0.2); }
 
-    .card-desc { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
-
-    .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+    .card-desc { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 10px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
     .tag { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
 
-    /* code / link */
-    .code-block { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 11px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #a5b4fc; overflow-x: auto; white-space: pre; line-height: 1.65; max-height: 120px; }
-    .code-block .c { color: var(--muted); }
-
-    .link-block { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 10px 14px; }
+    .code-block { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 10px 13px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #a5b4fc; overflow-x: auto; white-space: pre; line-height: 1.65; max-height: 110px; overflow-y: auto; }
+    .link-block { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 9px 13px; margin-top: 6px; }
     .link-block a { color: var(--blue); font-size: 13px; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
     .link-block a:hover { text-decoration: underline; }
 
-    .card-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
-    .btn-sm { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: var(--r-sm); font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+    .card-actions { display: flex; gap: 7px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+    .btn-sm { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: var(--r-sm); font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
     .btn-copy { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
     .btn-copy:hover { color: var(--text); border-color: var(--border-h); }
     .btn-copy.copied { background: rgba(52,211,153,0.15); color: var(--green); border-color: rgba(52,211,153,0.3); }
-    .btn-delete { margin-left: auto; background: transparent; color: var(--muted); border: 1px solid transparent; font-size: 12px; padding: 6px 10px; }
-    .btn-delete:hover { color: #f87171; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.07); }
     .btn-edit { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
     .btn-edit:hover { color: var(--text); border-color: var(--border-h); }
+    .btn-delete { margin-left: auto; background: transparent; color: var(--muted); border: 1px solid transparent; }
+    .btn-delete:hover { color: var(--red); border-color: rgba(248,113,113,0.25); background: rgba(248,113,113,0.07); }
 
-    /* local-only badge */
-    .badge-local { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.25); }
-
-    /* export panel */
-    .export-panel { background: var(--surface); border: 1px solid var(--border-h); border-radius: var(--r); padding: 20px 22px; margin-bottom: 28px; display: none; }
-    .export-panel.open { display: block; }
-    .export-panel h3 { font-size: 13px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-    .export-panel p { font-size: 12.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
-    .export-code { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #a5b4fc; white-space: pre; overflow-x: auto; max-height: 220px; overflow-y: auto; line-height: 1.6; margin-bottom: 10px; }
-    .export-actions { display: flex; gap: 8px; }
-    .btn-export-copy { background: var(--accent); border: none; color: #fff; font-family: inherit; font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: var(--r-sm); cursor: pointer; transition: background 0.15s; }
-    .btn-export-copy:hover { background: var(--accent-h); }
-    .btn-export-copy.copied { background: #059669; }
-    .btn-export-close { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 13px; padding: 8px 14px; border-radius: var(--r-sm); cursor: pointer; }
-    .btn-export-close:hover { color: var(--text); }
-
-    /* ── Empty ── */
+    /* ── Empty / Loading ── */
     #empty { display: none; text-align: center; padding: 80px 20px; color: var(--muted); }
+    #loading { text-align: center; padding: 80px 20px; color: var(--muted); font-size: 14px; }
+
+    /* ── Settings Panel ── */
+    .settings-panel { background: var(--surface); border: 1px solid var(--border-h); border-radius: var(--r); padding: 22px 24px; margin-bottom: 28px; display: none; }
+    .settings-panel.open { display: block; }
+    .settings-panel h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .settings-panel p { font-size: 12.5px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+    .settings-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    .settings-field { flex: 1; min-width: 200px; }
+    .settings-field label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .settings-field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 9px 12px; outline: none; transition: border-color 0.2s; }
+    .settings-field input:focus { border-color: var(--accent); }
+    .btn-save-settings { background: var(--accent); border: none; color: #fff; font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 18px; border-radius: var(--r-sm); cursor: pointer; white-space: nowrap; }
+    .settings-note { font-size: 11.5px; color: var(--muted); margin-top: 10px; }
+    .settings-note a { color: var(--blue); }
 
     /* ── Modal ── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 100;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(6px);
-      display: flex; align-items: center; justify-content: center; padding: 24px;
-      opacity: 0; pointer-events: none; transition: opacity 0.2s;
-    }
+    .modal-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.72); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border-h);
-      border-radius: 16px;
-      width: 100%; max-width: 560px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 28px 30px;
-      transform: translateY(12px);
-      transition: transform 0.2s;
-    }
+    .modal { background: var(--surface); border: 1px solid var(--border-h); border-radius: 16px; width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; padding: 26px 28px; transform: translateY(10px); transition: transform 0.2s; }
     .modal-overlay.open .modal { transform: translateY(0); }
 
-    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-    .modal-title { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
-    .modal-close { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-size: 16px; width: 30px; height: 30px; border-radius: var(--r-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+    .modal-title { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+    .modal-close { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-size: 15px; width: 28px; height: 28px; border-radius: var(--r-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .modal-close:hover { color: var(--text); }
 
     /* Form */
-    .form-row { margin-bottom: 18px; }
-    .form-row label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px; }
-    .form-row input, .form-row textarea, .form-row select {
-      width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm);
-      color: var(--text); font-family: inherit; font-size: 14px; padding: 10px 13px; outline: none;
-      transition: border-color 0.2s; resize: vertical;
-    }
-    .form-row textarea { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; min-height: 110px; line-height: 1.6; }
-    .form-row input:focus, .form-row textarea:focus, .form-row select:focus { border-color: var(--accent); }
-    .form-row select option { background: #1c1c24; }
-
-    .type-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .type-opt { display: none; }
-    .type-label {
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      padding: 12px 8px; border-radius: var(--r-sm); border: 1px solid var(--border);
-      cursor: pointer; font-size: 12px; color: var(--muted); text-align: center; transition: all 0.15s;
-    }
-    .type-label span:first-child { font-size: 20px; }
-    .type-opt:checked + .type-label { border-color: var(--accent); color: var(--accent-h); background: rgba(124,106,247,0.1); }
-
-    /* section divider in modal */
-    .form-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0 18px; }
-    .form-section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
-    .form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
+    .form-row { margin-bottom: 16px; }
+    .form-row label { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .form-row input, .form-row textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); color: var(--text); font-family: inherit; font-size: 14px; padding: 9px 12px; outline: none; transition: border-color 0.2s; }
+    .form-row input:focus, .form-row textarea:focus { border-color: var(--accent); }
+    .form-row textarea { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; min-height: 90px; line-height: 1.6; resize: vertical; }
     .form-hint { font-size: 11.5px; color: var(--muted); margin-top: 5px; }
 
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
-    .btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 14px; padding: 9px 18px; border-radius: var(--r-sm); cursor: pointer; }
-    .btn-cancel:hover { color: var(--text); }
-    .btn-save { background: var(--accent); border: none; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; padding: 9px 22px; border-radius: var(--r-sm); cursor: pointer; transition: background 0.15s; }
-    .btn-save:hover { background: var(--accent-h); }
+    .type-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+    .type-opt { display: none; }
+    .type-label { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 6px; border-radius: var(--r-sm); border: 1px solid var(--border); cursor: pointer; font-size: 11px; color: var(--muted); text-align: center; transition: all 0.15s; }
+    .type-label span:first-child { font-size: 18px; }
+    .type-opt:checked + .type-label { border-color: var(--accent); color: var(--accent-h); background: rgba(124,106,247,0.1); }
 
-    /* footer */
+    .form-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0 16px; }
+    .form-section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* Files list in form */
+    .files-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
+    .file-entry { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); overflow: hidden; }
+    .file-entry-header { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+    .file-entry-header input { flex: 1; background: transparent; border: none; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12.5px; outline: none; padding: 2px 4px; }
+    .file-entry-header input::placeholder { color: var(--muted); }
+    .file-lang-select { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font-family: inherit; font-size: 11px; padding: 3px 6px; outline: none; cursor: pointer; }
+    .file-lang-select:focus { border-color: var(--accent); }
+    .remove-file-btn { background: transparent; border: none; color: var(--muted); font-size: 14px; cursor: pointer; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 4px; flex-shrink: 0; }
+    .remove-file-btn:hover { color: var(--red); background: rgba(248,113,113,0.1); }
+    .file-entry textarea { width: 100%; background: transparent; border: none; color: #a5b4fc; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; padding: 10px 12px; outline: none; resize: vertical; min-height: 120px; line-height: 1.6; display: block; }
+    .btn-add-file { background: transparent; border: 1px dashed var(--border); border-radius: var(--r-sm); color: var(--muted); font-family: inherit; font-size: 12.5px; padding: 8px 14px; cursor: pointer; width: 100%; text-align: center; transition: all 0.15s; }
+    .btn-add-file:hover { border-color: var(--accent); color: var(--accent-h); }
+
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 13.5px; padding: 8px 16px; border-radius: var(--r-sm); cursor: pointer; }
+    .btn-cancel:hover { color: var(--text); }
+    .btn-save { background: var(--accent); border: none; color: #fff; font-family: inherit; font-size: 13.5px; font-weight: 600; padding: 8px 20px; border-radius: var(--r-sm); cursor: pointer; transition: background 0.15s; display: flex; align-items: center; gap: 6px; }
+    .btn-save:hover { background: var(--accent-h); }
+    .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── File Viewer Modal ── */
+    .viewer-modal { max-width: 800px; }
+    .file-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 0; overflow-x: auto; }
+    .file-tab { padding: 8px 16px; font-size: 12.5px; font-family: 'JetBrains Mono', monospace; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; }
+    .file-tab:hover { color: var(--text); }
+    .file-tab.active { color: var(--accent-h); border-bottom-color: var(--accent); }
+    .file-viewer-code { background: var(--bg); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--r-sm) var(--r-sm); padding: 14px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #a5b4fc; white-space: pre; overflow: auto; max-height: 60vh; line-height: 1.65; }
+    .viewer-copy { margin-top: 10px; }
+
     footer { text-align: center; padding: 40px 0 0; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 60px; }
   </style>
 </head>
 <body>
-
 <div class="shell">
 
   <header>
     <div class="header-left">
       <h1>🛠 Tools Hub</h1>
-      <p>Your mini tools, scripts, and links — all in one place.</p>
+      <p>All tools saved to GitHub automatically.</p>
+    </div>
+    <div class="header-right">
+      <div class="save-status" id="save-status">
+        <span class="save-dot"></span>
+        <span id="save-text"></span>
+      </div>
+      <button class="btn-icon" id="btn-settings" title="GitHub Settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
     </div>
   </header>
 
+  <!-- Setup banner (shown when no token) -->
+  <div class="setup-banner" id="setup-banner" style="display:none;">
+    <p>🔑 Connect your GitHub account so tools save automatically. <span>Takes 30 seconds.</span></p>
+    <button class="btn-setup" id="btn-setup">Connect GitHub →</button>
+  </div>
+
+  <!-- Settings panel -->
+  <div class="settings-panel" id="settings-panel">
+    <h3>GitHub Settings</h3>
+    <p>Enter a GitHub Personal Access Token with <strong>Contents: Read & Write</strong> access to this repo.<br/>
+    <a href="https://github.com/settings/tokens/new?scopes=repo&description=Tools+Hub" target="_blank" rel="noopener" style="color:var(--blue);font-size:12px;">Generate token on GitHub →</a></p>
+    <div class="settings-row">
+      <div class="settings-field">
+        <label>GitHub Token</label>
+        <input id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+      </div>
+      <button class="btn-save-settings" id="save-settings">Save & Connect</button>
+    </div>
+    <p class="settings-note">Token is stored in your browser only. Repo: <code>dead-simba/glowve-tool-hub</code> · File: <code>tools.json</code></p>
+  </div>
+
+  <!-- Toolbar -->
   <div class="toolbar">
     <div class="search-wrap">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -221,34 +249,20 @@
       <button class="filter-btn" data-filter="api">API</button>
       <button class="filter-btn" data-filter="other">Other</button>
     </div>
-    <button class="btn-add" id="open-export" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);" title="Export all tools as code to push to GitHub">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Export to GitHub
-    </button>
     <button class="btn-add" id="open-modal">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add tool
     </button>
   </div>
 
-  <!-- Export panel -->
-  <div class="export-panel" id="export-panel">
-    <h3>⚠️ Local tools are NOT on GitHub</h3>
-    <p>Tools you add via the browser are saved in <strong>localStorage</strong> — local to this browser only. To make them permanent, copy this code block and ask an AI to replace the <code>defaultTools</code> array in <code>index.html</code> and push to GitHub.</p>
-    <div class="export-code" id="export-code"></div>
-    <div class="export-actions">
-      <button class="btn-export-copy" id="copy-export">Copy code</button>
-      <button class="btn-export-close" id="close-export">Close</button>
-    </div>
-  </div>
-
-  <div class="cards" id="cards-grid"></div>
+  <div id="loading">Loading tools from GitHub…</div>
+  <div class="cards" id="cards-grid" style="display:none;"></div>
   <div id="empty">
     <div style="font-size:36px;margin-bottom:8px;">🔍</div>
-    <p>No tools match your search.</p>
+    <p>No tools found.</p>
   </div>
 
-  <footer>Tools Hub &middot; Default tools on GitHub &middot; User-added tools saved in browser localStorage</footer>
+  <footer>Tools Hub · Saved to <a href="https://github.com/dead-simba/glowve-tool-hub/blob/main/tools.json" target="_blank" style="color:var(--blue);text-decoration:none;">GitHub</a></footer>
 </div>
 
 <!-- ── Add / Edit Modal ── -->
@@ -258,115 +272,182 @@
       <div class="modal-title" id="modal-title">Add a tool</div>
       <button class="modal-close" id="close-modal">✕</button>
     </div>
-
     <form id="tool-form" autocomplete="off">
 
       <div class="form-row">
         <label>Name</label>
-        <input id="f-name" type="text" placeholder="e.g. WebP Converter, My Dashboard…" required />
+        <input id="f-name" type="text" placeholder="e.g. WebP Converter, Dashboard…" required />
       </div>
 
       <div class="form-row">
         <label>Type</label>
         <div class="type-grid">
-          <input type="radio" name="type" value="script"  id="t-script"  class="type-opt" checked />
+          <input type="radio" name="type" value="script" id="t-script" class="type-opt" checked />
           <label class="type-label" for="t-script"><span>📄</span>Script</label>
-
-          <input type="radio" name="type" value="webapp"  id="t-webapp"  class="type-opt" />
+          <input type="radio" name="type" value="webapp" id="t-webapp" class="type-opt" />
           <label class="type-label" for="t-webapp"><span>🌐</span>Web App</label>
-
-          <input type="radio" name="type" value="cli"     id="t-cli"     class="type-opt" />
+          <input type="radio" name="type" value="cli" id="t-cli" class="type-opt" />
           <label class="type-label" for="t-cli"><span>⌨️</span>CLI</label>
-
-          <input type="radio" name="type" value="api"     id="t-api"     class="type-opt" />
+          <input type="radio" name="type" value="api" id="t-api" class="type-opt" />
           <label class="type-label" for="t-api"><span>🔌</span>API</label>
-
-          <input type="radio" name="type" value="other"   id="t-other"   class="type-opt" />
+          <input type="radio" name="type" value="other" id="t-other" class="type-opt" />
           <label class="type-label" for="t-other"><span>📦</span>Other</label>
         </div>
       </div>
 
       <div class="form-row">
-        <label>Description <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <label>Description</label>
         <input id="f-desc" type="text" placeholder="What does this tool do?" />
       </div>
 
       <div class="form-row">
         <label>Tags <span style="font-weight:400;text-transform:none;letter-spacing:0">(comma-separated)</span></label>
-        <input id="f-tags" type="text" placeholder="Python, Images, Compression…" />
+        <input id="f-tags" type="text" placeholder="Python, Images…" />
       </div>
 
       <hr class="form-divider" />
-      <div class="form-section-label">Content</div>
+      <div class="form-section-label">Links & Commands</div>
 
-      <!-- URL / Link -->
-      <div class="form-row" id="field-url">
-        <label>URL / Link <span style="font-weight:400;text-transform:none;letter-spacing:0">(for web apps, APIs, docs)</span></label>
+      <div class="form-row">
+        <label>URL / Link <span style="font-weight:400;text-transform:none;letter-spacing:0">(web apps, APIs, docs)</span></label>
         <input id="f-url" type="url" placeholder="https://…" />
       </div>
 
-      <!-- File path -->
-      <div class="form-row" id="field-filepath">
-        <label>File / Script path <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-        <input id="f-filepath" type="text" placeholder="/path/to/script.py or github.com/user/repo" />
-        <p class="form-hint">Local path on your machine, or a GitHub repo URL.</p>
+      <div class="form-row">
+        <label>Quick commands <span style="font-weight:400;text-transform:none;letter-spacing:0">(shown on card with a Copy button)</span></label>
+        <textarea id="f-code" placeholder="# How to run it&#10;python3 script.py --dir ./images"></textarea>
       </div>
 
-      <!-- Code / Commands -->
-      <div class="form-row" id="field-code">
-        <label>Commands / Code <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
-        <textarea id="f-code" placeholder="# Paste the commands to run this tool&#10;python3 script.py --dir ./images&#10;&#10;# Or paste the full script here"></textarea>
-        <p class="form-hint">These show on the card with a one-click Copy button.</p>
-      </div>
+      <hr class="form-divider" />
+      <div class="form-section-label">Script Files <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">(attach full scripts, code, configs)</span></div>
+
+      <div class="files-list" id="files-list"></div>
+      <button type="button" class="btn-add-file" id="add-file-btn">＋ Add a file</button>
 
     </form>
-
     <div class="modal-actions">
       <button class="btn-cancel" id="cancel-modal">Cancel</button>
-      <button class="btn-save" id="save-tool">Save tool</button>
+      <button class="btn-save" id="save-tool">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Save to GitHub
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── File Viewer Modal ── -->
+<div class="modal-overlay" id="viewer-overlay">
+  <div class="modal viewer-modal">
+    <div class="modal-header">
+      <div class="modal-title" id="viewer-title">Files</div>
+      <button class="modal-close" id="close-viewer">✕</button>
+    </div>
+    <div class="file-tabs" id="file-tabs"></div>
+    <div class="file-viewer-code" id="file-viewer-code"></div>
+    <div class="viewer-copy">
+      <button class="btn-sm btn-copy" id="viewer-copy-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy file
+      </button>
     </div>
   </div>
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-//  DATA
-// ─────────────────────────────────────────────
-const STORAGE_KEY = 'tools-hub-v1';
+// ═══════════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════════
+const REPO_OWNER = 'dead-simba';
+const REPO_NAME  = 'glowve-tool-hub';
+const TOOLS_FILE = 'tools.json';
+const FALLBACK_RAW = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${TOOLS_FILE}`;
+const API_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${TOOLS_FILE}`;
 
-const defaultTools = [
-  {
-    id: 'default-webp',
-    name: 'WebP Image Converter',
-    type: 'script',
-    desc: 'Batch-converts JPG & PNG to WebP. ~95% file size reduction. Supports dry-run, lossless, delete-originals.',
-    tags: ['Python', 'Images', 'Compression'],
-    url: '',
-    filepath: '',
-    code: `# Convert all images in a folder\npython3 convert_to_webp.py --dir "path/to/images"\n\n# Dry-run (preview only)\npython3 convert_to_webp.py --dry-run\n\n# Lossless (logos/icons)\npython3 convert_to_webp.py --lossless --skip-jpg`,
-    icon: '🖼'
-  }
-];
-
-function loadTools() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (Array.isArray(saved) && saved.length) return saved;
-  } catch(e) {}
-  return [...defaultTools];
-}
-
-function saveTools(tools) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
-}
-
-let tools = loadTools();
+// ═══════════════════════════════════════════════════════
+//  GITHUB API
+// ═══════════════════════════════════════════════════════
+let ghToken = localStorage.getItem('gh-token') || '';
+let fileSHA = null;
+let tools = [];
 let editingId = null;
 
-// ─────────────────────────────────────────────
+function ghHeaders() {
+  return {
+    'Authorization': `Bearer ${ghToken}`,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json'
+  };
+}
+
+async function loadTools() {
+  try {
+    // Try authenticated first (needed for private repos + gets SHA)
+    if (ghToken) {
+      const res = await fetch(API_BASE, { headers: ghHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        fileSHA = data.sha;
+        tools = JSON.parse(atob(data.content.replace(/\s/g, '')));
+        return;
+      }
+    }
+    // Fallback to raw (public repo, no token needed)
+    const res = await fetch(FALLBACK_RAW + '?t=' + Date.now());
+    if (!res.ok) throw new Error('Failed to load tools.json');
+    tools = await res.json();
+  } catch(e) {
+    tools = [];
+    console.error('Failed to load tools:', e);
+  }
+}
+
+async function saveToGitHub() {
+  if (!ghToken) throw new Error('No GitHub token configured. Open Settings (⚙) to connect.');
+  if (!fileSHA) {
+    // Need to get SHA first
+    const res = await fetch(API_BASE, { headers: ghHeaders() });
+    if (!res.ok) throw new Error('Could not fetch current file SHA.');
+    const d = await res.json();
+    fileSHA = d.sha;
+  }
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(tools, null, 2))));
+  const res = await fetch(API_BASE, {
+    method: 'PUT',
+    headers: ghHeaders(),
+    body: JSON.stringify({
+      message: `tools: update hub [${new Date().toISOString().slice(0,10)}]`,
+      content,
+      sha: fileSHA
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub API error ${res.status}`);
+  }
+  const data = await res.json();
+  fileSHA = data.content.sha;
+}
+
+// ═══════════════════════════════════════════════════════
+//  SAVE STATUS UI
+// ═══════════════════════════════════════════════════════
+let statusTimer;
+function showStatus(state, text) {
+  const el = document.getElementById('save-status');
+  const txt = document.getElementById('save-text');
+  clearTimeout(statusTimer);
+  el.className = `save-status visible ${state}`;
+  txt.textContent = text;
+  if (state !== 'saving') {
+    statusTimer = setTimeout(() => { el.classList.remove('visible'); }, 3000);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
 //  RENDER
-// ─────────────────────────────────────────────
-const typeIcon = { script:'📄', webapp:'🌐', cli:'⌨️', api:'🔌', other:'📦' };
+// ═══════════════════════════════════════════════════════
+const typeIcon  = { script:'📄', webapp:'🌐', cli:'⌨️', api:'🔌', other:'📦' };
 const typeLabel = { script:'Script', webapp:'Web App', cli:'CLI', api:'API', other:'Other' };
 
 function renderTools() {
@@ -376,71 +457,50 @@ function renderTools() {
 
   const filtered = tools.filter(t => {
     const matchFilter = filterActive === 'all' || t.type === filterActive;
-    const matchQ = !query || t.name.toLowerCase().includes(query) ||
+    const matchQ = !query ||
+      t.name.toLowerCase().includes(query) ||
       (t.desc||'').toLowerCase().includes(query) ||
       (t.tags||[]).join(' ').toLowerCase().includes(query);
     return matchFilter && matchQ;
   });
 
   grid.innerHTML = '';
-
-  if (filtered.length === 0) {
-    document.getElementById('empty').style.display = 'block';
-    return;
-  }
-  document.getElementById('empty').style.display = 'none';
+  document.getElementById('empty').style.display = filtered.length === 0 ? 'block' : 'none';
 
   filtered.forEach(t => {
     const card = document.createElement('div');
     card.className = 'card';
-    card.dataset.id = t.id;
 
-    const tagsHtml = (t.tags||[]).map(tag => `<span class="tag">${escHtml(tag)}</span>`).join('');
+    const tagsHtml = (t.tags||[]).map(tag => `<span class="tag">${esc(tag)}</span>`).join('');
+    const fileCount = (t.files||[]).length;
 
     let bodyHtml = '';
     if (t.code && t.code.trim()) {
-      bodyHtml += `<div class="code-block" id="code-${t.id}">${escHtml(t.code)}</div>`;
+      bodyHtml += `<div class="code-block" id="code-${t.id}">${esc(t.code)}</div>`;
     }
     if (t.url && t.url.trim()) {
-      bodyHtml += `<div class="link-block">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--blue);flex-shrink:0"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        <a href="${escHtml(t.url)}" target="_blank" rel="noopener">${escHtml(t.url)}</a>
-      </div>`;
-    }
-    if (t.filepath && t.filepath.trim()) {
-      bodyHtml += `<div class="link-block" style="margin-top:6px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted);flex-shrink:0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        <a href="file://${escHtml(t.filepath)}" title="${escHtml(t.filepath)}">${escHtml(t.filepath)}</a>
-      </div>`;
+      bodyHtml += `<div class="link-block"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--blue);flex-shrink:0"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><a href="${esc(t.url)}" target="_blank" rel="noopener">${esc(t.url)}</a></div>`;
     }
 
     let actionsHtml = '';
     if (t.code && t.code.trim()) {
-      actionsHtml += `<button class="btn-sm btn-copy" onclick="copyCode('code-${t.id}',this)">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-        Copy
-      </button>`;
+      actionsHtml += `<button class="btn-sm btn-copy" onclick="copyCode('code-${t.id}',this)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>`;
     }
-    actionsHtml += `<button class="btn-sm btn-edit" onclick="openEdit('${t.id}')">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      Edit
-    </button>`;
+    actionsHtml += `<button class="btn-sm btn-edit" onclick="openEdit('${t.id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit</button>`;
     actionsHtml += `<button class="btn-sm btn-delete" onclick="deleteTool('${t.id}')">Delete</button>`;
 
-    const isLocal = !t.id.startsWith('default-');
     card.innerHTML = `
       <div class="card-header">
         <div class="card-icon">${t.icon || typeIcon[t.type] || '📦'}</div>
         <div class="card-meta">
-          <div class="card-title">${escHtml(t.name)}</div>
+          <div class="card-title">${esc(t.name)}</div>
           <div class="card-badges">
             <span class="badge badge-${t.type}">${typeLabel[t.type]||t.type}</span>
-            ${isLocal ? '<span class="badge-local" title="Saved in your browser only — not on GitHub">⚠ Local only</span>' : ''}
+            ${fileCount > 0 ? `<span class="badge badge-files" onclick="openViewer('${t.id}')">📁 ${fileCount} file${fileCount>1?'s':''}</span>` : ''}
           </div>
         </div>
-      </div>`;
-    card.innerHTML += `
-      ${t.desc ? `<p class="card-desc">${escHtml(t.desc)}</p>` : ''}
+      </div>
+      ${t.desc ? `<p class="card-desc">${esc(t.desc)}</p>` : ''}
       ${tagsHtml ? `<div class="tags">${tagsHtml}</div>` : ''}
       ${bodyHtml}
       <div class="card-actions">${actionsHtml}</div>
@@ -449,87 +509,128 @@ function renderTools() {
   });
 }
 
-function escHtml(str) {
+function esc(str) {
   return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ─────────────────────────────────────────────
-//  INTERACTIONS
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
+//  COPY
+// ═══════════════════════════════════════════════════════
 function copyCode(id, btn) {
   const el = document.getElementById(id);
   if (!el) return;
   navigator.clipboard.writeText(el.innerText).then(() => {
     const orig = btn.innerHTML;
-    btn.classList.add('copied');
-    btn.textContent = '✓ Copied';
+    btn.classList.add('copied'); btn.textContent = '✓ Copied';
     setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2000);
   });
 }
 
-function deleteTool(id) {
-  if (!confirm('Delete this tool?')) return;
-  tools = tools.filter(t => t.id !== id);
-  saveTools(tools);
-  renderTools();
+// ═══════════════════════════════════════════════════════
+//  FILE VIEWER
+// ═══════════════════════════════════════════════════════
+let viewerFiles = [];
+let activeFileIdx = 0;
+
+function openViewer(toolId) {
+  const t = tools.find(t => t.id === toolId);
+  if (!t || !t.files || !t.files.length) return;
+  viewerFiles = t.files;
+  activeFileIdx = 0;
+  document.getElementById('viewer-title').textContent = t.name + ' — Files';
+  renderViewer();
+  document.getElementById('viewer-overlay').classList.add('open');
 }
 
-function openEdit(id) {
-  const t = tools.find(t => t.id === id);
-  if (!t) return;
-  editingId = id;
-  document.getElementById('modal-title').textContent = 'Edit tool';
-  document.getElementById('f-name').value    = t.name || '';
-  document.getElementById('f-desc').value    = t.desc || '';
-  document.getElementById('f-tags').value    = (t.tags||[]).join(', ');
-  document.getElementById('f-url').value     = t.url || '';
-  document.getElementById('f-filepath').value = t.filepath || '';
-  document.getElementById('f-code').value    = t.code || '';
-  // set type radio
-  const radio = document.querySelector(`input[name="type"][value="${t.type}"]`);
-  if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change')); }
-  openModal();
+function renderViewer() {
+  const tabs = document.getElementById('file-tabs');
+  const code = document.getElementById('file-viewer-code');
+  tabs.innerHTML = viewerFiles.map((f, i) =>
+    `<div class="file-tab ${i===activeFileIdx?'active':''}" onclick="switchTab(${i})">${esc(f.name||'untitled')}</div>`
+  ).join('');
+  code.textContent = viewerFiles[activeFileIdx]?.content || '';
 }
 
-// ─────────────────────────────────────────────
+function switchTab(i) {
+  activeFileIdx = i;
+  renderViewer();
+}
+
+document.getElementById('close-viewer').addEventListener('click', () => {
+  document.getElementById('viewer-overlay').classList.remove('open');
+});
+document.getElementById('viewer-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('viewer-overlay')) document.getElementById('viewer-overlay').classList.remove('open');
+});
+document.getElementById('viewer-copy-btn').addEventListener('click', function() {
+  const content = viewerFiles[activeFileIdx]?.content || '';
+  navigator.clipboard.writeText(content).then(() => {
+    const orig = this.innerHTML;
+    this.classList.add('copied'); this.textContent = '✓ Copied';
+    setTimeout(() => { this.classList.remove('copied'); this.innerHTML = orig; }, 2000);
+  });
+});
+
+// ═══════════════════════════════════════════════════════
+//  FILE ENTRIES IN FORM
+// ═══════════════════════════════════════════════════════
+let formFiles = [];
+
+function renderFormFiles() {
+  const list = document.getElementById('files-list');
+  if (formFiles.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = formFiles.map((f, i) => `
+    <div class="file-entry">
+      <div class="file-entry-header">
+        <input type="text" placeholder="filename.py" value="${esc(f.name||'')}" oninput="formFiles[${i}].name=this.value" />
+        <select class="file-lang-select" onchange="formFiles[${i}].language=this.value">
+          ${['python','javascript','typescript','bash','json','yaml','markdown','text'].map(l =>
+            `<option value="${l}" ${f.language===l?'selected':''}>${l}</option>`
+          ).join('')}
+        </select>
+        <button type="button" class="remove-file-btn" onclick="removeFormFile(${i})">✕</button>
+      </div>
+      <textarea placeholder="# Paste your code here…" oninput="formFiles[${i}].content=this.value">${esc(f.content||'')}</textarea>
+    </div>
+  `).join('');
+}
+
+function removeFormFile(i) {
+  formFiles.splice(i, 1);
+  renderFormFiles();
+}
+
+document.getElementById('add-file-btn').addEventListener('click', () => {
+  formFiles.push({ name: '', language: 'python', content: '' });
+  renderFormFiles();
+  // Focus the new filename input
+  const inputs = document.querySelectorAll('.file-entry-header input');
+  if (inputs.length) inputs[inputs.length - 1].focus();
+});
+
+// ═══════════════════════════════════════════════════════
 //  MODAL
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
 function openModal() {
   document.getElementById('modal-overlay').classList.add('open');
-  document.getElementById('f-name').focus();
+  setTimeout(() => document.getElementById('f-name').focus(), 100);
 }
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
   document.getElementById('tool-form').reset();
+  formFiles = [];
+  renderFormFiles();
   editingId = null;
   document.getElementById('modal-title').textContent = 'Add a tool';
 }
 
 document.getElementById('open-modal').addEventListener('click', () => {
   editingId = null;
+  formFiles = [];
+  renderFormFiles();
   document.getElementById('tool-form').reset();
   document.getElementById('modal-title').textContent = 'Add a tool';
   openModal();
-});
-
-// ── Export panel ──
-document.getElementById('open-export').addEventListener('click', () => {
-  const panel = document.getElementById('export-panel');
-  const codeEl = document.getElementById('export-code');
-  const code = 'const defaultTools = ' + JSON.stringify(tools, null, 2) + ';';
-  codeEl.textContent = code;
-  panel.classList.toggle('open');
-});
-document.getElementById('close-export').addEventListener('click', () => {
-  document.getElementById('export-panel').classList.remove('open');
-});
-document.getElementById('copy-export').addEventListener('click', function() {
-  const code = document.getElementById('export-code').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    this.textContent = '✓ Copied!';
-    this.classList.add('copied');
-    setTimeout(() => { this.textContent = 'Copy code'; this.classList.remove('copied'); }, 2500);
-  });
 });
 document.getElementById('close-modal').addEventListener('click', closeModal);
 document.getElementById('cancel-modal').addEventListener('click', closeModal);
@@ -537,44 +638,146 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 });
 
-// All content fields are always visible — no hide/show logic needed.
+function openEdit(id) {
+  const t = tools.find(t => t.id === id);
+  if (!t) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = 'Edit tool';
+  document.getElementById('f-name').value  = t.name || '';
+  document.getElementById('f-desc').value  = t.desc || '';
+  document.getElementById('f-tags').value  = (t.tags||[]).join(', ');
+  document.getElementById('f-url').value   = t.url  || '';
+  document.getElementById('f-code').value  = t.code || '';
+  const radio = document.querySelector(`input[name="type"][value="${t.type}"]`);
+  if (radio) radio.checked = true;
+  formFiles = (t.files || []).map(f => ({...f}));
+  renderFormFiles();
+  openModal();
+}
 
-// ─────────────────────────────────────────────
-//  SAVE
-// ─────────────────────────────────────────────
-document.getElementById('save-tool').addEventListener('click', () => {
+// ═══════════════════════════════════════════════════════
+//  SAVE TOOL
+// ═══════════════════════════════════════════════════════
+document.getElementById('save-tool').addEventListener('click', async () => {
   const name = document.getElementById('f-name').value.trim();
   if (!name) { document.getElementById('f-name').focus(); return; }
 
-  const type     = document.querySelector('input[name="type"]:checked')?.value || 'script';
-  const desc     = document.getElementById('f-desc').value.trim();
-  const tagsRaw  = document.getElementById('f-tags').value.trim();
-  const tags     = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const url      = document.getElementById('f-url').value.trim();
-  const filepath = document.getElementById('f-filepath').value.trim();
-  const code     = document.getElementById('f-code').value.trim();
+  const saveBtn = document.getElementById('save-tool');
+  saveBtn.disabled = true;
+  showStatus('saving', 'Saving to GitHub…');
+
+  const type    = document.querySelector('input[name="type"]:checked')?.value || 'script';
+  const desc    = document.getElementById('f-desc').value.trim();
+  const tagsRaw = document.getElementById('f-tags').value.trim();
+  const tags    = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const url     = document.getElementById('f-url').value.trim();
+  const code    = document.getElementById('f-code').value.trim();
+  // Collect files (filter out empty ones)
+  const files = formFiles.filter(f => f.name.trim() || f.content.trim()).map(f => ({
+    name:     f.name.trim() || 'untitled',
+    language: f.language || 'text',
+    content:  f.content || ''
+  }));
 
   if (editingId) {
     const idx = tools.findIndex(t => t.id === editingId);
-    if (idx !== -1) {
-      tools[idx] = { ...tools[idx], name, type, desc, tags, url, filepath, code };
-    }
+    if (idx !== -1) tools[idx] = { ...tools[idx], name, type, desc, tags, url, code, files };
   } else {
-    tools.push({
-      id: 'tool-' + Date.now(),
-      name, type, desc, tags, url, filepath, code,
-      icon: typeIcon[type] || '📦'
-    });
+    tools.push({ id: 'tool-' + Date.now(), name, type, desc, tags, url, code, files, icon: typeIcon[type] || '📦' });
   }
 
-  saveTools(tools);
-  closeModal();
-  renderTools();
+  try {
+    await saveToGitHub();
+    showStatus('saved', 'Saved to GitHub ✓');
+    closeModal();
+    renderTools();
+  } catch(e) {
+    showStatus('error', e.message);
+    alert('❌ ' + e.message);
+    // Roll back
+    if (editingId) {
+      // Re-load to restore
+      await loadTools();
+    } else {
+      tools.pop();
+    }
+  } finally {
+    saveBtn.disabled = false;
+  }
 });
 
-// ─────────────────────────────────────────────
-//  FILTER & SEARCH
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
+//  DELETE
+// ═══════════════════════════════════════════════════════
+async function deleteTool(id) {
+  if (!confirm('Delete this tool from GitHub?')) return;
+  const prev = [...tools];
+  tools = tools.filter(t => t.id !== id);
+  showStatus('saving', 'Deleting…');
+  try {
+    await saveToGitHub();
+    showStatus('saved', 'Deleted ✓');
+    renderTools();
+  } catch(e) {
+    tools = prev;
+    showStatus('error', e.message);
+    alert('❌ ' + e.message);
+    renderTools();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  SETTINGS
+// ═══════════════════════════════════════════════════════
+document.getElementById('btn-settings').addEventListener('click', () => {
+  const panel = document.getElementById('settings-panel');
+  const btn = document.getElementById('btn-settings');
+  const isOpen = panel.classList.toggle('open');
+  btn.classList.toggle('active', isOpen);
+  if (isOpen) document.getElementById('gh-token').value = ghToken || '';
+});
+
+document.getElementById('btn-setup').addEventListener('click', () => {
+  document.getElementById('setup-banner').style.display = 'none';
+  document.getElementById('settings-panel').classList.add('open');
+  document.getElementById('btn-settings').classList.add('active');
+  document.getElementById('gh-token').focus();
+});
+
+document.getElementById('save-settings').addEventListener('click', async () => {
+  const token = document.getElementById('gh-token').value.trim();
+  if (!token) { alert('Please enter a GitHub token.'); return; }
+  const btn = document.getElementById('save-settings');
+  btn.textContent = 'Testing…';
+  btn.disabled = true;
+  try {
+    // Test the token
+    const res = await fetch(API_BASE, { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' } });
+    if (!res.ok) throw new Error(`Token invalid or no access (${res.status})`);
+    const data = await res.json();
+    fileSHA = data.sha;
+    tools = JSON.parse(atob(data.content.replace(/\s/g, '')));
+    ghToken = token;
+    localStorage.setItem('gh-token', token);
+    btn.textContent = '✓ Connected!';
+    document.getElementById('setup-banner').style.display = 'none';
+    renderTools();
+    setTimeout(() => {
+      document.getElementById('settings-panel').classList.remove('open');
+      document.getElementById('btn-settings').classList.remove('active');
+      btn.textContent = 'Save & Connect';
+      btn.disabled = false;
+    }, 1500);
+  } catch(e) {
+    btn.textContent = 'Save & Connect';
+    btn.disabled = false;
+    alert('❌ ' + e.message);
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+//  FILTERS & SEARCH
+// ═══════════════════════════════════════════════════════
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -583,16 +786,27 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 document.getElementById('search').addEventListener('input', renderTools);
-
-// keyboard shortcut — Escape closes modal
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') {
+    closeModal();
+    document.getElementById('viewer-overlay').classList.remove('open');
+  }
 });
 
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════
 //  INIT
-// ─────────────────────────────────────────────
-renderTools();
+// ═══════════════════════════════════════════════════════
+(async () => {
+  document.getElementById('loading').style.display = 'block';
+  await loadTools();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('cards-grid').style.display = '';
+  renderTools();
+  // Show setup banner if no token
+  if (!ghToken) {
+    document.getElementById('setup-banner').style.display = 'flex';
+  }
+})();
 </script>
 </body>
 </html>
