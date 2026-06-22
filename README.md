@@ -89,3 +89,4 @@ If you are using the web interface to add/edit tools:
 | :--- | :--- | :--- |
 | **WebP Image Converter** | Script | Batch-converts JPG & PNG to WebP. ~95% file size reduction. |
 | **Glowvé Blog Writer & Cost Tracker** | CLI | Autonomous multi-agent pipeline using Gemini models, DataForSEO, and Pexels. Includes cost tracking script. |
+| **Gemini TTS Script Creator & Generator** | Script | Batch Text-to-Speech generation scripts using Gemini 3.1 Flash. Supports emotion tags, voice customization, and WAV headers. |
