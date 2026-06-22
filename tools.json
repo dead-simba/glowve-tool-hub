@@ -13,16 +13,5 @@
     "code": "# Convert all images in a folder\npython3 convert_to_webp.py --dir \"path/to/images\"\n\n# Dry-run (preview only)\npython3 convert_to_webp.py --dry-run\n\n# Lossless mode (logos, icons with transparency)\npython3 convert_to_webp.py --lossless --skip-jpg\n\n# Convert + delete originals\npython3 convert_to_webp.py --dir \"path/to/images\" --delete-originals",
     "files": [],
     "icon": "ð¼"
-  },
-  {
-    "id": "tool-1782114692212",
-    "name": "Testing",
-    "type": "script",
-    "desc": "",
-    "tags": [],
-    "url": "",
-    "code": "",
-    "files": [],
-    "icon": "📄"
   }
 ]
