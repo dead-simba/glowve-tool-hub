@@ -175,6 +175,10 @@
     .file-entry textarea { width: 100%; background: transparent; border: none; color: #a5b4fc; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; padding: 10px 12px; outline: none; resize: vertical; min-height: 120px; line-height: 1.6; display: block; }
     .btn-add-file { background: transparent; border: 1px dashed var(--border); border-radius: var(--r-sm); color: var(--muted); font-family: inherit; font-size: 12.5px; padding: 8px 14px; cursor: pointer; width: 100%; text-align: center; transition: all 0.15s; }
     .btn-add-file:hover { border-color: var(--accent); color: var(--accent-h); }
+    .upload-zone { border: 1px dashed var(--border); border-radius: var(--r-sm); padding: 18px; text-align: center; color: var(--muted); font-size: 13px; cursor: pointer; transition: all 0.15s; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); color: var(--accent-h); background: rgba(124,106,247,0.03); }
+    .upload-zone svg { color: var(--muted); transition: color 0.15s; }
+    .upload-zone:hover svg, .upload-zone.dragover svg { color: var(--accent-h); }
 
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
     .btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 13.5px; padding: 8px 16px; border-radius: var(--r-sm); cursor: pointer; }
@@ -322,7 +326,12 @@
       <div class="form-section-label">Script Files <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px">(attach full scripts, code, configs)</span></div>
 
       <div class="files-list" id="files-list"></div>
-      <button type="button" class="btn-add-file" id="add-file-btn">＋ Add a file</button>
+      <div class="upload-zone" id="upload-zone">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <div>Drag & drop scripts here, or click to browse</div>
+      </div>
+      <input type="file" id="file-uploader" multiple style="display: none;" />
+      <button type="button" class="btn-add-file" id="add-file-btn" style="margin-top: 8px;">＋ Add empty file</button>
 
     </form>
     <div class="modal-actions">
@@ -607,6 +616,66 @@ document.getElementById('add-file-btn').addEventListener('click', () => {
   const inputs = document.querySelectorAll('.file-entry-header input');
   if (inputs.length) inputs[inputs.length - 1].focus();
 });
+
+// File uploading and Drag & Drop
+const uploadZone = document.getElementById('upload-zone');
+const fileUploader = document.getElementById('file-uploader');
+
+uploadZone.addEventListener('click', () => fileUploader.click());
+
+fileUploader.addEventListener('change', e => {
+  handleUploadedFiles(e.target.files);
+});
+
+uploadZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  uploadZone.classList.add('dragover');
+});
+
+uploadZone.addEventListener('dragleave', () => {
+  uploadZone.classList.remove('dragover');
+});
+
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  if (e.dataTransfer.files) {
+    handleUploadedFiles(e.dataTransfer.files);
+  }
+});
+
+function handleUploadedFiles(files) {
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const content = e.target.result;
+      const language = detectLanguage(file.name);
+      formFiles.push({
+        name: file.name,
+        language,
+        content
+      });
+      renderFormFiles();
+    };
+    reader.readAsText(file);
+  });
+  // Reset uploader value so same file can be selected again
+  fileUploader.value = '';
+}
+
+function detectLanguage(filename) {
+  const ext = filename.split('.').pop().toLowerCase();
+  switch (ext) {
+    case 'py': return 'python';
+    case 'js': case 'mjs': case 'cjs': return 'javascript';
+    case 'ts': case 'tsx': return 'typescript';
+    case 'sh': case 'bash': case 'zsh': return 'bash';
+    case 'json': return 'json';
+    case 'yaml': case 'yml': return 'yaml';
+    case 'md': return 'markdown';
+    default: return 'text';
+  }
+}
 
 // ═══════════════════════════════════════════════════════
 //  MODAL
