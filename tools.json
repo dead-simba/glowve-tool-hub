@@ -64,5 +64,33 @@
       }
     ],
     "icon": "🗣️"
+  },
+  {
+    "id": "postex-fifo-allocator",
+    "name": "PostEx COD Tracker & FIFO Allocator",
+    "type": "script",
+    "desc": "PostEx COD (Cash on Delivery) API tracker and FIFO (First-In, First-Out) stock allocation engine using Drizzle ORM transactions.",
+    "tags": [
+      "TypeScript",
+      "Next.js",
+      "Drizzle",
+      "API",
+      "Inventory"
+    ],
+    "url": "/Users/alitahir/Documents/Programming Projects/Glowve Inventory Management App",
+    "code": "// Track a PostEx package\nconst status = await getPostExTracking(\"PE123456789\");\n\n// Allocate stock using FEFO/FIFO inside a transaction\nawait db.transaction(async (tx) => {\n  await allocateStock(tx, skuId, quantity, orderId, salePrice, codAmount);\n});",
+    "files": [
+      {
+        "name": "postex.ts",
+        "language": "typescript",
+        "content": "const POSTEX_BASE_URL = \"https://api.postex.pk/services/v1\";\n\nexport type PostExStatus = {\n  status: string;\n  statusDetail: string;\n  trackingNumber: string;\n  shippingCost: number;\n  codFee: number;\n};\n\n/**\n * Fetches the latest tracking status from PostEx API\n */\nexport async function getPostExTracking(trackingNumber: string): Promise<PostExStatus | null> {\n  const token = process.env.GLOWVE_POSTEX_TOKEN;\n  if (!token) {\n    console.error(\"PostEx token not configured.\");\n    return null;\n  }\n\n  try {\n    const response = await fetch(`${POSTEX_BASE_URL}/track-order/${trackingNumber}`, {\n      method: \"GET\",\n      headers: {\n        token: token,\n        \"Content-Type\": \"application/json\",\n      },\n    });\n\n    if (!response.ok) {\n      console.error(`PostEx API error: ${response.status}`);\n      return null;\n    }\n\n    const data = await response.json();\n    \n    // PostEx returns { statusCode: \"200\", statusMessage: \"Success\", dist: { ... } }\n    if (data.statusCode === \"200\" && data.dist) {\n      return {\n        status: data.dist.orderStatus,\n        statusDetail: data.dist.transactionStatus || data.dist.orderStatus,\n        trackingNumber: trackingNumber,\n        shippingCost: Number(data.dist.serviceCharges || 0),\n        codFee: Number(data.dist.codCharges || 0),\n      };\n    }\n\n    return null;\n  } catch (error) {\n    console.error(\"Failed to fetch PostEx tracking:\", error);\n    return null;\n  }\n}\n\n/**\n * Maps PostEx status strings to our internal Order status\n */\nexport function mapPostExStatus(postexStatus: string): \"dispatched\" | \"delivered\" | \"returned\" | \"confirmed\" {\n  const s = postexStatus.toLowerCase();\n  \n  if (s.includes(\"delivered\")) return \"delivered\";\n  if (s.includes(\"return\") || s.includes(\"rto\")) return \"returned\";\n  if (s.includes(\"cancel\")) return \"returned\"; // Cancelled usually means didn't deliver\n  if (s.includes(\"shipped\") || s.includes(\"transit\") || s.includes(\"out for delivery\")) return \"dispatched\";\n  \n  return \"dispatched\"; // Default to dispatched if we have a tracking number but status is unclear\n}\n"
+      },
+      {
+        "name": "inventory.ts",
+        "language": "typescript",
+        "content": "import { batches, batchMovements, orderItems } from \"./db/schema\";\nimport { eq, asc, and, gt, sql } from \"drizzle-orm\";\nimport { db } from \"./db\";\n\ntype DbTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];\n\n/**\n * Allocates stock for a given SKU using FIFO logic (oldest expiry date first).\n * MUST be called within a database transaction.\n * \n * @param tx The Drizzle transaction object\n * @param skuId The ID of the SKU being ordered\n * @param quantityRequired Total number of units required\n * @param orderId The ID of the newly created order\n * @param salePrice Price per unit for this order item\n * @param codAmount COD amount assigned to this specific item (often 0 if paid, or full price)\n */\nexport async function allocateStock(\n  tx: DbTransaction,\n  skuId: string,\n  quantityRequired: number,\n  orderId: string,\n  salePrice: number,\n  codAmount: number\n) {\n  let remainingToAllocate = quantityRequired;\n\n  // 1. Find all active batches for this SKU, ordered by closest expiry date (FIFO)\n  const activeBatches = await tx\n    .select()\n    .from(batches)\n    .where(and(eq(batches.skuId, skuId), gt(batches.unitsRemaining, 0)))\n    .orderBy(asc(batches.expiryDate));\n\n  // 2. Calculate total available stock to ensure we can fulfill the order\n  const totalAvailable = activeBatches.reduce((sum: number, b: typeof batches.$inferSelect) => sum + b.unitsRemaining, 0);\n\n  if (totalAvailable < quantityRequired) {\n    throw new Error(`Insufficient stock for SKU ${skuId}. Required: ${quantityRequired}, Available: ${totalAvailable}`);\n  }\n\n  // 3. Iterate through batches and deduct stock\n  for (const batch of activeBatches) {\n    if (remainingToAllocate <= 0) break;\n\n    const unitsToTakeFromThisBatch = Math.min(batch.unitsRemaining, remainingToAllocate);\n\n    // Deduct from batch\n    await tx\n      .update(batches)\n      .set({\n        unitsRemaining: sql`${batches.unitsRemaining} - ${unitsToTakeFromThisBatch}`,\n      })\n      .where(eq(batches.id, batch.id));\n\n    // Create BatchMovement record (audit trail)\n    await tx.insert(batchMovements).values({\n      batchId: batch.id,\n      movementType: \"dispatch\",\n      quantityChange: -unitsToTakeFromThisBatch, // Negative because stock is leaving\n      referenceId: orderId,\n      notes: \"Auto-allocated by FIFO engine\",\n    });\n\n    // Create OrderItem record linking the specific batch to the order\n    await tx.insert(orderItems).values({\n      orderId,\n      skuId,\n      batchId: batch.id,\n      quantity: unitsToTakeFromThisBatch,\n      salePrice: salePrice.toString(),\n      codAmount: codAmount.toString(),\n    });\n\n    remainingToAllocate -= unitsToTakeFromThisBatch;\n  }\n\n  // Double check\n  if (remainingToAllocate > 0) {\n    throw new Error(\"Failed to allocate full quantity despite adequate total stock. Concurrency issue?\");\n  }\n}\n"
+      }
+    ],
+    "icon": "📦"
   }
 ]
