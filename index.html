@@ -380,6 +380,25 @@ let fileSHA = null;
 let tools = [];
 let editingId = null;
 
+function decodeBase64Utf8(base64) {
+  const binary = atob(base64.replace(/\s/g, ''));
+  const len = binary.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new TextDecoder().decode(bytes);
+}
+
+function encodeBase64Utf8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
 function ghHeaders() {
   return {
     'Authorization': `Bearer ${ghToken}`,
@@ -397,7 +416,7 @@ async function loadTools() {
       if (res.ok) {
         const data = await res.json();
         fileSHA = data.sha;
-        tools = JSON.parse(atob(data.content.replace(/\s/g, '')));
+        tools = JSON.parse(decodeBase64Utf8(data.content));
         return;
       }
     }
@@ -420,7 +439,7 @@ async function saveToGitHub() {
     const d = await res.json();
     fileSHA = d.sha;
   }
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(tools, null, 2))));
+  const content = encodeBase64Utf8(JSON.stringify(tools, null, 2));
   const res = await fetch(API_BASE, {
     method: 'PUT',
     headers: ghHeaders(),
@@ -825,7 +844,7 @@ document.getElementById('save-settings').addEventListener('click', async () => {
     if (!res.ok) throw new Error(`Token invalid or no access (${res.status})`);
     const data = await res.json();
     fileSHA = data.sha;
-    tools = JSON.parse(atob(data.content.replace(/\s/g, '')));
+    tools = JSON.parse(decodeBase64Utf8(data.content));
     ghToken = token;
     localStorage.setItem('gh-token', token);
     btn.textContent = '✓ Connected!';
