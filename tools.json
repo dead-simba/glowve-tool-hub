@@ -148,5 +148,20 @@
       }
     ],
     "icon": "🔗"
+  },
+  {
+    "id": "tool-1782197037380",
+    "name": "Gemini - Product Variant Price Calculator",
+    "type": "webapp",
+    "desc": "It calculates price with discount",
+    "tags": [
+      "artifact",
+      "gemini",
+      "calculator"
+    ],
+    "url": "https://gemini.google.com/share/c5c9edd7b342",
+    "code": "",
+    "files": [],
+    "icon": "🌐"
   }
 ]
