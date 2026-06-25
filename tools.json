@@ -177,5 +177,25 @@
     "code": "",
     "files": [],
     "icon": "🌐"
+  },
+  {
+    "id": "tool-1782419116798",
+    "name": "Order Dispatch Tool",
+    "type": "webapp",
+    "desc": "Upload PostEx PDF labels → download a formatted Excel dispatch sheet with order details and product totals.",
+    "tags": [
+      "Shopify",
+      "PDF",
+      "Excel",
+      "Flask",
+      "Python",
+      "Vercel",
+      "Fulfillment",
+      "Dispatch"
+    ],
+    "url": "https://dispatch-sheet-creator.vercel.app",
+    "code": "",
+    "files": [],
+    "icon": "🌐"
   }
 ]
