@@ -163,5 +163,19 @@
     "code": "",
     "files": [],
     "icon": "🌐"
+  },
+  {
+    "id": "tool-1782380423184",
+    "name": "Small Operational Expense Manager",
+    "type": "webapp",
+    "desc": "A serverless, mobile-optimized conversational chatbot hosted entirely inside Google Apps Script (GAS) and bound to your existing spreadsheet: LumaLabs Expenses  It uses Gemini 1.5 Flash to extract, categorize, verify, and log transactions directly into your personal tab (Ali Tahir). You access it securely via a passcode directly on your phone's browser and can add it to your Home Screen.",
+    "tags": [
+      "Expense",
+      "operational-expense-manager"
+    ],
+    "url": "https://script.google.com/macros/s/AKfycbxVjKl62RglvtwhwXSyMSoLOhDv-SsXfNLeg0RMr9yVfXaA4W9iIwTbZUMcrD5zLI1H/exec",
+    "code": "",
+    "files": [],
+    "icon": "🌐"
   }
 ]
